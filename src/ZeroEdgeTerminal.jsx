@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import tradesData from "./TradesData";
 
 export default function ZeroEdgeTerminal() {
   const commissionRate = 0.3;
@@ -30,27 +31,9 @@ export default function ZeroEdgeTerminal() {
     return () => clearInterval(interval);
   }, []);
 
-  const [closedTrades] = useState([
-    { date: "2025-10-24", exchange: "Asterdex", symbol: "BNBUSDT", side: "Long", leverage: "", mode: "Cross", pnl: -12.85, hasCommission: false },
-    { date: "2025-10-24", exchange: "Asterdex", symbol: "AVAXUSDT", side: "Buy", leverage: "10x", mode: "Cross", pnl: -225.61, hasCommission: false },
-    { date: "2025-10-25 16:38:41", exchange: "Kucoin", symbol: "BNBUSDT Perp", side: "Long", leverage: "Isolated", mode: "Isolated", pnl: -61.1, hasCommission: false },
-    { date: "2025-10-25 16:46:56", exchange: "Kucoin", symbol: "BNBUSDT Perp", side: "Long", leverage: "Cross", mode: "Cross", pnl: -42.1, hasCommission: false },
-    { date: "2025-10-26 17:18:35", exchange: "Kucoin", symbol: "XTZUSDT Perp", side: "Long", leverage: "Isolated", mode: "Isolated", pnl: -27.19, hasCommission: false },
-    { date: "2025-10-27 08:42:39", exchange: "Kucoin", symbol: "COTIUSDT Perp", side: "Long", leverage: "Isolated", mode: "Isolated", pnl: -563.16, hasCommission: false },
-    { date: "2025-10-27 09:29:34", exchange: "Kucoin", symbol: "XTZUSDT Perp", side: "Long", leverage: "Isolated", mode: "Isolated", pnl: -135.95, hasCommission: false },
-    { date: "2025-10-28 17:09:15", exchange: "Kucoin", symbol: "XTZUSDT Perp", side: "Long", leverage: "Isolated", mode: "Isolated", pnl: -504.98, hasCommission: false },
-    { date: "2025-10-28 22:03:27", exchange: "Kucoin", symbol: "UNIUSDT Perp", side: "Long", leverage: "Isolated", mode: "Isolated", pnl: -1207.19, hasCommission: false },
-    { date: "2025-10-29", exchange: "Asterdex", symbol: "AAVEUSDT", side: "Buy", leverage: "10x", mode: "Cross", pnl: -294, hasCommission: true },
-    { date: "2025-10-29", exchange: "Asterdex", symbol: "AAVEUSDT", side: "Buy", leverage: "10x", mode: "Cross", pnl: -342, hasCommission: true },
-    { date: "2025-10-31", exchange: "Asterdex", symbol: "ADAUSDT", side: "Sell", leverage: "8x", mode: "Cross", pnl: 825.72, hasCommission: true },
-    { date: "2025-10-31", exchange: "Asterdex", symbol: "AAVEUSDT", side: "Sell", leverage: "8x", mode: "Cross", pnl: 2235.69, hasCommission: true },
-    { date: "2025-11-01", exchange: "Asterdex", symbol: "BTCUSDT", side: "Buy", leverage: "15x", mode: "Cross", pnl: 36.22, hasCommission: true },
-    { date: "2025-11-01 14:43:46", exchange: "Kucoin", symbol: "ARBUSDT Perp", side: "Long", leverage: "10x", mode: "Cross", pnl: 366.23, hasCommission: true },
-    { date: "2025-11-02 15:47:04", exchange: "Kucoin", symbol: "BTCUSDT Perp", side: "Long", leverage: "Cross", mode: "Cross", pnl: -86.18, hasCommission: false },
-    { date: "2025-11-02 17:37:24", exchange: "Kucoin", symbol: "XTZUSDT Perp", side: "Short", leverage: "Isolated", mode: "Isolated", pnl: -914.94, hasCommission: false },
-    { date: "2025-11-02 17:37:24", exchange: "Kucoin", symbol: "BTCUSDT Perp", side: "Long", leverage: "15x", mode: "Isolated", pnl: -2036.94, hasCommission: false },
-    { date: "2025-11-02 17:37:24", exchange: "Kucoin", symbol: "BCHUSDT Perp", side: "Long", leverage: "15x", mode: "Isolated", pnl: -97.52, hasCommission: false }
-  ].sort((a, b) => new Date(a.date) - new Date(b.date)));
+  const closedTrades = [...tradesData].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
 
   const calcTotals = (trades) => {
     const totalPnl = trades.reduce((acc, t) => acc + t.pnl, 0);
@@ -65,57 +48,134 @@ export default function ZeroEdgeTerminal() {
   const totals = calcTotals(closedTrades);
   const fmt = (n) => (typeof n !== "number" || Number.isNaN(n) ? "0.00" : n.toFixed(2));
 
-  const totalInvestment = 5290; // Aster sold
-  const additionalUSDT = 4400; // Remaining funds
-  const totalTarget = totalInvestment + additionalUSDT; // 9690 total break-even target
-  const rebuyCost = asterPrice * 5000; // Rebuy 5k ASTER
+  const totalInvestment = 5290;
+  const additionalUSDT = 4400;
+  const totalTarget = totalInvestment + additionalUSDT;
+  const rebuyCost = asterPrice * 5000;
   const remainingToBreakEven = totalTarget - currentMargin;
 
   return (
-    <div style={{ background: "#000", color: "#00ff9f", minHeight: "100vh", fontFamily: "IBM Plex Mono, monospace" }}>
-      <header style={{ background: "linear-gradient(90deg, #001a0f, #003b26)", padding: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#00eaff" }}>
-        <h2>ZEROEDGE TRADING TERMINAL // v3.5</h2>
-        <span>{time.toLocaleDateString()} {time.toLocaleTimeString()}</span>
+    <div
+      style={{
+        background: "radial-gradient(circle at top, #0a0a0a 0%, #000 100%)",
+        color: "#66d9ef",
+        minHeight: "100vh",
+        fontFamily: "Share Tech Mono, monospace",
+      }}
+    >
+      <header
+        style={{
+          background: "linear-gradient(90deg, #101010, #222, #050505)",
+          padding: "16px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "2px solid #00bcd4",
+          boxShadow: "0 0 20px #00bcd455",
+        }}
+      >
+        <h2 style={{ color: "#00bcd4", textShadow: "0 0 10px #00bcd488" }}>
+          ZEROEDGE TERMINAL // Cyberpunk View
+        </h2>
+        <span style={{ color: "#ffb300" }}>
+          {time.toLocaleDateString()} {time.toLocaleTimeString()}
+        </span>
       </header>
 
-      <nav style={{ display: "flex", gap: "10px", padding: "10px 20px", background: "#001a0f" }}>
-        {['trades', 'aster'].map((tab) => (
+      <nav
+        style={{
+          display: "flex",
+          gap: "10px",
+          padding: "10px 20px",
+          background: "#111",
+          borderBottom: "1px solid #00bcd4",
+        }}
+      >
+        {["trades", "aster"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             style={{
-              background: activeTab === tab ? '#00eaff' : 'transparent',
-              color: activeTab === tab ? '#000' : '#00ff9f',
-              border: '1px solid #00ff9f',
-              borderRadius: '4px',
-              padding: '6px 12px',
-              cursor: 'pointer'
+              background:
+                activeTab === tab
+                  ? "linear-gradient(90deg, #00bcd4, #ffb300)"
+                  : "transparent",
+              color: activeTab === tab ? "#000" : "#66d9ef",
+              border: "1px solid #00bcd4",
+              borderRadius: "8px",
+              padding: "8px 14px",
+              cursor: "pointer",
+              fontWeight: 700,
+              transition: "all 0.3s ease-in-out",
             }}
           >
-            {tab === 'trades' ? 'Closed Trades' : 'Holdings'}
+            {tab === "trades" ? "📊 CLOSED TRADES" : "💼 HOLDINGS"}
           </button>
         ))}
       </nav>
 
-      {activeTab === 'trades' ? (
-        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} style={{ padding: "20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
+      {activeTab === "trades" ? (
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          style={{
+            padding: "30px",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            gap: "20px",
+          }}
+        >
           {[
-            { label: "Total Closed PnL", value: `${fmt(totals.totalPnl)} USDT`, color: totals.totalPnl >= 0 ? "#00ff9f" : "#ff4d4d" },
-            { label: "Commission (30%)", value: `${fmt(totals.commission)} USDT`, color: "#00eaff" },
-            { label: "Net Closed", value: `${fmt(totals.net)} USDT`, color: totals.net >= 0 ? "#00ff9f" : "#ff4d4d" },
-            { label: "Total Trades", value: totals.count, color: "#00eaff" }
+            {
+              label: "Total Closed PnL",
+              value: `${fmt(totals.totalPnl)} USDT`,
+              color: totals.totalPnl >= 0 ? "#00ff9f" : "#ff1744",
+            },
+            {
+              label: "Commission (30%)",
+              value: `${fmt(totals.commission)} USDT`,
+              color: "#ffb300",
+            },
+            {
+              label: "Net Closed",
+              value: `${fmt(totals.net)} USDT`,
+              color: totals.net >= 0 ? "#00bcd4" : "#ff4d4d",
+            },
+            {
+              label: "Total Trades",
+              value: totals.count,
+              color: "#66d9ef",
+            },
           ].map((item, i) => (
-            <motion.div key={i} whileHover={{ scale: 1.05 }} style={{ background: "rgba(0,255,159,0.05)", border: `1px solid ${item.color}`, boxShadow: `0 0 10px ${item.color}55`, borderRadius: "10px", padding: "20px" }}>
-              <h4 style={{ color: item.color, marginBottom: "6px" }}>{item.label}</h4>
-              <p style={{ fontSize: "18px", fontWeight: 700 }}>{item.value}</p>
+            <motion.div
+              key={i}
+              whileHover={{ scale: 1.08 }}
+              style={{
+                background: "rgba(0,188,212,0.07)",
+                border: `1px solid ${item.color}`,
+                boxShadow: `0 0 15px ${item.color}55`,
+                borderRadius: "10px",
+                padding: "20px",
+              }}
+            >
+              <h4 style={{ color: item.color }}>{item.label}</h4>
+              <p style={{ fontSize: "20px", fontWeight: 700, color: item.color }}>{item.value}</p>
             </motion.div>
           ))}
 
           <motion.div style={{ gridColumn: "1 / -1" }}>
-            <h3 style={{ color: "#00eaff", marginBottom: "10px" }}>Closed Trades Overview</h3>
-            <table style={{ width: "100%", borderCollapse: "collapse", background: "rgba(0,255,159,0.03)", border: "1px solid #00ff8844" }}>
+            <h3 style={{ color: "#00bcd4", marginBottom: "10px" }}>Closed Trades Overview</h3>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                background: "rgba(0,188,212,0.03)",
+                border: "1px solid #00bcd422",
+              }}
+            >
               <thead>
-                <tr style={{ color: "#00eaff", borderBottom: "1px solid #00ff8855" }}>
+                <tr style={{ color: "#00bcd4" }}>
                   <th style={{ padding: "10px" }}>Date</th>
                   <th>Exchange</th>
                   <th>Symbol</th>
@@ -127,7 +187,7 @@ export default function ZeroEdgeTerminal() {
               </thead>
               <tbody>
                 {closedTrades.map((t, i) => (
-                  <tr key={i} style={{ color: t.pnl >= 0 ? "#00ff9f" : "#ff4d4d", borderBottom: "1px solid #00ff8844" }}>
+                  <tr key={i} style={{ color: t.pnl >= 0 ? "#00ff9f" : "#ff5252" }}>
                     <td style={{ padding: "8px" }}>{t.date}</td>
                     <td>{t.exchange}</td>
                     <td>{t.symbol}</td>
@@ -142,39 +202,49 @@ export default function ZeroEdgeTerminal() {
           </motion.div>
         </motion.section>
       ) : (
-        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} style={{ padding: "20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          style={{ padding: "30px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "20px" }}
+        >
           {[
-            { label: "Break-Even Target (5k Aster + 4.4k USDT)", value: `$${fmt(totalTarget)}`, color: "#ffcc00" },
-            { label: "Amount Needed to Break Even", value: `${fmt(remainingToBreakEven)} USDT`, color: remainingToBreakEven > 0 ? "#ff4d4d" : "#00ff9f" },
-            { label: "Cost to Rebuy 5,000 Aster", value: `$${fmt(rebuyCost)}`, color: "#00eaff" }
+            {
+              label: "Break-Even Target (5k Aster + 4.4k USDT)",
+              value: `$${fmt(totalTarget)}`,
+              color: "#ffb300",
+            },
+            {
+              label: "Amount Needed to Break Even",
+              value: `${fmt(remainingToBreakEven)} USDT`,
+              color: remainingToBreakEven > 0 ? "#ff5252" : "#00ff9f",
+            },
+            {
+              label: "Cost to Rebuy 5,000 Aster",
+              value: `$${fmt(rebuyCost)}`,
+              color: "#00bcd4",
+            },
           ].map((item, i) => (
-            <motion.div key={i} whileHover={{ scale: 1.05 }} style={{ background: "rgba(0,255,159,0.05)", border: `1px solid ${item.color}`, boxShadow: `0 0 10px ${item.color}55`, borderRadius: "10px", padding: "20px" }}>
-              <h4 style={{ color: item.color, marginBottom: "6px" }}>{item.label}</h4>
-              <p style={{ fontSize: "18px", fontWeight: 700 }}>{item.value}</p>
+            <motion.div key={i} whileHover={{ scale: 1.08 }} style={{ background: "rgba(255,179,0,0.08)", border: `1px solid ${item.color}`, boxShadow: `0 0 20px ${item.color}66`, borderRadius: "10px", padding: "20px" }}>
+              <h4 style={{ color: item.color }}>{item.label}</h4>
+              <p style={{ fontSize: "20px", fontWeight: 700, color: item.color }}>{item.value}</p>
             </motion.div>
           ))}
 
-          <div style={{ gridColumn: "1 / -1", marginTop: "8px" }}>
-            <label style={{ display: "block", marginBottom: 6, color: "#00eaff" }}>Update Current Margin (USDT)</label>
+          <div style={{ gridColumn: "1 / -1", marginTop: "12px" }}>
+            <label style={{ display: "block", marginBottom: 6, color: "#00bcd4" }}>Update Current Margin (USDT)</label>
             <input
               type="number"
               value={currentMargin}
               onChange={(e) => setCurrentMargin(Number(e.target.value) || 0)}
-              style={{
-                background: "#001a0f",
-                color: "#00ff9f",
-                border: "1px solid #00eaff",
-                borderRadius: 6,
-                padding: "8px 10px",
-                width: 220
-              }}
+              style={{ background: "#111", color: "#66d9ef", border: "1px solid #00bcd4", borderRadius: 6, padding: "8px 10px", width: 220 }}
             />
           </div>
         </motion.section>
       )}
 
-      <footer style={{ textAlign: "center", padding: "12px", background: "#001a0f", color: "#00ff9f" }}>
-        © 2025 ZeroEdge Labs — Matrix Dashboard v3.5
+      <footer style={{ textAlign: "center", padding: "12px", background: "#0a0a0a", color: "#00bcd4" }}>
+        ⚡ © 2025 ZeroEdge Labs — TITANIUM MATRIX v4.0 ⚡
       </footer>
     </div>
   );
