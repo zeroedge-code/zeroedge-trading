@@ -6,6 +6,7 @@ export default function ZeroEdgeTerminal() {
   const [time, setTime] = useState(new Date());
   const [asterPrice, setAsterPrice] = useState(0);
   const [currentMargin, setCurrentMargin] = useState(8000);
+  const [activeTab, setActiveTab] = useState("trades");
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -73,59 +74,107 @@ export default function ZeroEdgeTerminal() {
   return (
     <div style={{ background: "#000", color: "#00ff9f", minHeight: "100vh", fontFamily: "IBM Plex Mono, monospace" }}>
       <header style={{ background: "linear-gradient(90deg, #001a0f, #003b26)", padding: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#00eaff" }}>
-        <h2>ZEROEDGE TRADING TERMINAL // v3.4</h2>
+        <h2>ZEROEDGE TRADING TERMINAL // v3.5</h2>
         <span>{time.toLocaleDateString()} {time.toLocaleTimeString()}</span>
       </header>
 
-      <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} style={{ padding: "20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
-        {[
-          { label: "Total Closed PnL", value: `${fmt(totals.totalPnl)} USDT`, color: totals.totalPnl >= 0 ? "#00ff9f" : "#ff4d4d" },
-          { label: "Commission (30%)", value: `${fmt(totals.commission)} USDT`, color: "#00eaff" },
-          { label: "Net Closed", value: `${fmt(totals.net)} USDT`, color: totals.net >= 0 ? "#00ff9f" : "#ff4d4d" },
-          { label: "Total Trades", value: totals.count, color: "#00eaff" },
-          { label: "Break-Even Target (5k Aster + 4.4k USDT)", value: `$${fmt(totalTarget)}`, color: "#ffcc00" },
-          { label: "Amount Needed to Break Even", value: `${fmt(remainingToBreakEven)} USDT`, color: remainingToBreakEven > 0 ? "#ff4d4d" : "#00ff9f" },
-          { label: "Cost to Rebuy 5,000 Aster", value: `$${fmt(rebuyCost)}`, color: "#00eaff" }
-        ].map((item, i) => (
-          <motion.div key={i} whileHover={{ scale: 1.05 }} style={{ background: "rgba(0,255,159,0.05)", border: `1px solid ${item.color}`, boxShadow: `0 0 10px ${item.color}55`, borderRadius: "10px", padding: "20px" }}>
-            <h4 style={{ color: item.color, marginBottom: "6px" }}>{item.label}</h4>
-            <p style={{ fontSize: "18px", fontWeight: 700 }}>{item.value}</p>
-          </motion.div>
+      <nav style={{ display: "flex", gap: "10px", padding: "10px 20px", background: "#001a0f" }}>
+        {['trades', 'aster'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            style={{
+              background: activeTab === tab ? '#00eaff' : 'transparent',
+              color: activeTab === tab ? '#000' : '#00ff9f',
+              border: '1px solid #00ff9f',
+              borderRadius: '4px',
+              padding: '6px 12px',
+              cursor: 'pointer'
+            }}
+          >
+            {tab === 'trades' ? 'Closed Trades' : 'Holdings'}
+          </button>
         ))}
-      </motion.section>
+      </nav>
 
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} style={{ padding: "20px" }}>
-        <h3 style={{ color: "#00eaff", marginBottom: "10px" }}>Closed Trades Overview</h3>
-        <table style={{ width: "100%", borderCollapse: "collapse", background: "rgba(0,255,159,0.03)", border: "1px solid #00ff8844" }}>
-          <thead>
-            <tr style={{ color: "#00eaff", borderBottom: "1px solid #00ff8855" }}>
-              <th style={{ padding: "10px" }}>Date</th>
-              <th>Exchange</th>
-              <th>Symbol</th>
-              <th>Side</th>
-              <th>Lev</th>
-              <th>Mode</th>
-              <th style={{ textAlign: "right" }}>PnL (USDT)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {closedTrades.map((t, i) => (
-              <tr key={i} style={{ color: t.pnl >= 0 ? "#00ff9f" : "#ff4d4d", borderBottom: "1px solid #00ff8844" }}>
-                <td style={{ padding: "8px" }}>{t.date}</td>
-                <td>{t.exchange}</td>
-                <td>{t.symbol}</td>
-                <td>{t.side}</td>
-                <td>{t.leverage}</td>
-                <td>{t.mode}</td>
-                <td style={{ textAlign: "right" }}>{fmt(t.pnl)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </motion.div>
+      {activeTab === 'trades' ? (
+        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} style={{ padding: "20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
+          {[
+            { label: "Total Closed PnL", value: `${fmt(totals.totalPnl)} USDT`, color: totals.totalPnl >= 0 ? "#00ff9f" : "#ff4d4d" },
+            { label: "Commission (30%)", value: `${fmt(totals.commission)} USDT`, color: "#00eaff" },
+            { label: "Net Closed", value: `${fmt(totals.net)} USDT`, color: totals.net >= 0 ? "#00ff9f" : "#ff4d4d" },
+            { label: "Total Trades", value: totals.count, color: "#00eaff" }
+          ].map((item, i) => (
+            <motion.div key={i} whileHover={{ scale: 1.05 }} style={{ background: "rgba(0,255,159,0.05)", border: `1px solid ${item.color}`, boxShadow: `0 0 10px ${item.color}55`, borderRadius: "10px", padding: "20px" }}>
+              <h4 style={{ color: item.color, marginBottom: "6px" }}>{item.label}</h4>
+              <p style={{ fontSize: "18px", fontWeight: 700 }}>{item.value}</p>
+            </motion.div>
+          ))}
+
+          <motion.div style={{ gridColumn: "1 / -1" }}>
+            <h3 style={{ color: "#00eaff", marginBottom: "10px" }}>Closed Trades Overview</h3>
+            <table style={{ width: "100%", borderCollapse: "collapse", background: "rgba(0,255,159,0.03)", border: "1px solid #00ff8844" }}>
+              <thead>
+                <tr style={{ color: "#00eaff", borderBottom: "1px solid #00ff8855" }}>
+                  <th style={{ padding: "10px" }}>Date</th>
+                  <th>Exchange</th>
+                  <th>Symbol</th>
+                  <th>Side</th>
+                  <th>Lev</th>
+                  <th>Mode</th>
+                  <th style={{ textAlign: "right" }}>PnL (USDT)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {closedTrades.map((t, i) => (
+                  <tr key={i} style={{ color: t.pnl >= 0 ? "#00ff9f" : "#ff4d4d", borderBottom: "1px solid #00ff8844" }}>
+                    <td style={{ padding: "8px" }}>{t.date}</td>
+                    <td>{t.exchange}</td>
+                    <td>{t.symbol}</td>
+                    <td>{t.side}</td>
+                    <td>{t.leverage}</td>
+                    <td>{t.mode}</td>
+                    <td style={{ textAlign: "right" }}>{fmt(t.pnl)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </motion.div>
+        </motion.section>
+      ) : (
+        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} style={{ padding: "20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
+          {[
+            { label: "Break-Even Target (5k Aster + 4.4k USDT)", value: `$${fmt(totalTarget)}`, color: "#ffcc00" },
+            { label: "Amount Needed to Break Even", value: `${fmt(remainingToBreakEven)} USDT`, color: remainingToBreakEven > 0 ? "#ff4d4d" : "#00ff9f" },
+            { label: "Cost to Rebuy 5,000 Aster", value: `$${fmt(rebuyCost)}`, color: "#00eaff" }
+          ].map((item, i) => (
+            <motion.div key={i} whileHover={{ scale: 1.05 }} style={{ background: "rgba(0,255,159,0.05)", border: `1px solid ${item.color}`, boxShadow: `0 0 10px ${item.color}55`, borderRadius: "10px", padding: "20px" }}>
+              <h4 style={{ color: item.color, marginBottom: "6px" }}>{item.label}</h4>
+              <p style={{ fontSize: "18px", fontWeight: 700 }}>{item.value}</p>
+            </motion.div>
+          ))}
+
+          <div style={{ gridColumn: "1 / -1", marginTop: "8px" }}>
+            <label style={{ display: "block", marginBottom: 6, color: "#00eaff" }}>Update Current Margin (USDT)</label>
+            <input
+              type="number"
+              value={currentMargin}
+              onChange={(e) => setCurrentMargin(Number(e.target.value) || 0)}
+              style={{
+                background: "#001a0f",
+                color: "#00ff9f",
+                border: "1px solid #00eaff",
+                borderRadius: 6,
+                padding: "8px 10px",
+                width: 220
+              }}
+            />
+          </div>
+        </motion.section>
+      )}
 
       <footer style={{ textAlign: "center", padding: "12px", background: "#001a0f", color: "#00ff9f" }}>
-        © 2025 ZeroEdge Labs — Matrix Dashboard v3.4
+        © 2025 ZeroEdge Labs — Matrix Dashboard v3.5
       </footer>
     </div>
   );
