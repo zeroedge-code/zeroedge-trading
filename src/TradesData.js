@@ -18,7 +18,8 @@ const closedTradesData = [
   { date: "2025-11-02 15:47:04", exchange: "Kucoin", symbol: "BTCUSDT Perp", side: "Long", leverage: "Cross", mode: "Cross", pnl: -86.18, hasCommission: false },
   { date: "2025-11-02 17:37:24", exchange: "Kucoin", symbol: "XTZUSDT Perp", side: "Short", leverage: "Isolated", mode: "Isolated", pnl: -914.94, hasCommission: false },
   { date: "2025-11-02 17:37:24", exchange: "Kucoin", symbol: "BTCUSDT Perp", side: "Long", leverage: "15x", mode: "Isolated", pnl: -2036.94, hasCommission: false },
-  { date: "2025-11-02 17:37:24", exchange: "Kucoin", symbol: "BCHUSDT Perp", side: "Long", leverage: "15x", mode: "Isolated", pnl: -97.52, hasCommission: false }
+  { date: "2025-11-02 17:37:24", exchange: "Kucoin", symbol: "BCHUSDT Perp", side: "Long", leverage: "15x", mode: "Isolated", pnl: -97.52, hasCommission: false },
+  { date: "2025-11-02 17:37:24", exchange: "Kucoin", symbol: "BTCUSDT Perp", side: "Short", leverage: "15x", mode: "Isolated", pnl: -1200, hasCommission: false },
 ];
 
 export default closedTradesData;
